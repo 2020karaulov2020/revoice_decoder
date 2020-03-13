@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "revoice", "..\revoice\msvc\revoice.vcxproj", "{DAEFE371-7D77-4B72-A8A5-3CD3D1A55786}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "revoice_decoder", "..\revoice\msvc\revoice.vcxproj", "{DAEFE371-7D77-4B72-A8A5-3CD3D1A55786}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E1AC990E-C012-4167-80C2-84C98AA7070C} = {E1AC990E-C012-4167-80C2-84C98AA7070C}
 		{966DE7A9-EC15-4C1D-8B46-EA813A845723} = {966DE7A9-EC15-4C1D-8B46-EA813A845723}
@@ -40,5 +40,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {04C79225-D406-4F1D-B426-DF11868E105D}
 	EndGlobalSection
 EndGlobal

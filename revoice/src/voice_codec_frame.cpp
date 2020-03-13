@@ -1,4 +1,7 @@
-#include "precompiled.h"
+
+#include "osconf.h"
+
+#include <voice_codec_frame.h>
 
 VoiceCodec_Frame::VoiceCodec_Frame(IFrameEncoder *pEncoder)
 {
@@ -40,13 +43,13 @@ int VoiceCodec_Frame::Compress(const char *pUncompressedBytes, int nSamples, cha
 	if (m_pFrameEncoder == nullptr)
 		return 0;
 
-	const int16 *pUncompressed = (const int16 *) pUncompressedBytes;
+	const int16_t *pUncompressed = (const int16_t *) pUncompressedBytes;
 
 	int nCompressedBytes = 0;
 	while ((nSamples + m_nEncodeBufferSamples) >= m_nRawSamples && (maxCompressedBytes - nCompressedBytes) >= m_nEncodedBytes)
 	{
 		// Get the data block out.
-		int16 samples[MAX_FRAMEBUFFER_SAMPLES];
+		int16_t samples[MAX_FRAMEBUFFER_SAMPLES];
 		memcpy(samples, m_EncodeBuffer, m_nEncodeBufferSamples * BYTES_PER_SAMPLE);
 		memcpy(&samples[m_nEncodeBufferSamples], pUncompressed, (m_nRawSamples - m_nEncodeBufferSamples) * BYTES_PER_SAMPLE);
 		nSamples -= m_nRawSamples - m_nEncodeBufferSamples;

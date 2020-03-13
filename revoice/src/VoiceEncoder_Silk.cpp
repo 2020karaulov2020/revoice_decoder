@@ -1,4 +1,6 @@
-#include "precompiled.h"
+#include "osconf.h"
+
+#include "VoiceEncoder_Silk.h"
 
 VoiceEncoder_Silk::VoiceEncoder_Silk()
 {
@@ -97,8 +99,8 @@ int VoiceEncoder_Silk::Compress(const char *pUncompressedIn, int nSamplesIn, cha
 
 	while (nSamples > 0)
 	{
-		int16 *pWritePayloadSize = (int16 *)pWritePos;
-		pWritePos += sizeof(int16); //leave 2 bytes for the frame size (will be written after encoding)
+		int16_t *pWritePayloadSize = (int16_t *)pWritePos;
+		pWritePos += sizeof(int16_t); //leave 2 bytes for the frame size (will be written after encoding)
 
 		int originalNBytes = (pWritePosMax - pWritePos > 0xFFFF) ? -1 : (pWritePosMax - pWritePos);
 		nSamplesToEncode = (nSamples < nSamplesPerFrame) ? nSamples : nSamplesPerFrame;
@@ -114,7 +116,7 @@ int VoiceEncoder_Silk::Compress(const char *pUncompressedIn, int nSamplesIn, cha
 
 		nSamples -= nSamplesToEncode;
 
-		int16 nBytes = originalNBytes;
+		int16_t nBytes = originalNBytes;
 		int res = SKP_Silk_SDK_Encode(this->m_pEncoder, &this->m_encControl, psRead, nSamplesToEncode, (unsigned char *)pWritePos, &nBytes);
 		*pWritePayloadSize = nBytes; //write frame size
 
@@ -133,8 +135,8 @@ int VoiceEncoder_Silk::Compress(const char *pUncompressedIn, int nSamplesIn, cha
 		ResetState();
 
 		if (pWritePosMax > pWritePos + 2) {
-			uint16 *pWriteEndFlag = (uint16*)pWritePos;
-			pWritePos += sizeof(uint16);
+			uint16_t *pWriteEndFlag = (uint16_t*)pWritePos;
+			pWritePos += sizeof(uint16_t);
 			*pWriteEndFlag = 0xFFFF;
 		}
 	}
@@ -171,8 +173,8 @@ int VoiceEncoder_Silk::Decompress(const char *pCompressed, int compressedBytes, 
 			break;
 		}
 
-		nPayloadSize = *(uint16 *)pReadPos;
-		pReadPos += sizeof(uint16);
+		nPayloadSize = *(uint16_t *)pReadPos;
+		pReadPos += sizeof(uint16_t);
 
 		if (nPayloadSize == 0xFFFF) {
 			ResetState();
@@ -206,7 +208,7 @@ int VoiceEncoder_Silk::Decompress(const char *pCompressed, int compressedBytes, 
 				return (pWritePos - pUncompressed) / 2;
 			}
 
-			pWritePos += nSamples * sizeof(int16);
+			pWritePos += nSamples * sizeof(int16_t);
 		} while (m_decControl.moreInternalDecoderFrames);
 		pReadPos += nPayloadSize;
 	}

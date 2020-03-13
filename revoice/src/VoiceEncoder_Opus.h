@@ -18,8 +18,8 @@ private:
 	int m_samplerate;
 	int m_bitrate;
 
-	uint16 m_nEncodeSeq;
-	uint16 m_nDecodeSeq;
+	uint16_t m_nEncodeSeq;
+	uint16_t m_nDecodeSeq;
 
 	bool m_PacketLossConcealment;
 

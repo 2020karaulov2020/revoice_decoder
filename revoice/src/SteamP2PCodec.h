@@ -1,13 +1,13 @@
 #pragma once
+#include "osconf.h"
 
-#include "revoice_shared.h"
 #include "IVoiceCodec.h"
 
 class CSteamP2PCodec: public IVoiceCodec {
 public:
 	CSteamP2PCodec(IVoiceCodec *backend);
 
-	enum PayLoadType : uint8
+	enum PayLoadType : uint8_t
 	{
 		PLT_Silence       = 0, // Number of empty samples, which should be set to NULL.
 		PLT_UnknownCodec  = 1,

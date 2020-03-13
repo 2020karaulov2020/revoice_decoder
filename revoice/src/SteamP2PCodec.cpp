@@ -1,4 +1,5 @@
-#include "precompiled.h"
+#include "osconf.h"
+#include "SteamP2PCodec.h"
 
 CSteamP2PCodec::CSteamP2PCodec(IVoiceCodec *backend)
 {
@@ -59,7 +60,7 @@ int CSteamP2PCodec::StreamDecode(const char *pCompressed, int compressedBytes, c
 					return 0;
 				}
 
-				uint16 len = *(uint16 *)readPos;
+				uint16_t len = *(uint16_t *)readPos;
 				readPos += 2;
 
 				if (readPos + len > maxReadPos) {
@@ -90,7 +91,7 @@ int CSteamP2PCodec::StreamEncode(const char *pUncompressedBytes, int nSamples, c
 	}
 
 	*(writePos++) = PLT_SamplingRate; // Set sampling rate
-	*(uint16 *)writePos = 16000;
+	*(uint16_t *)writePos = 16000;
 	writePos += 2;
 
 	*(writePos++) = PLT_Silk; // Voice payload
@@ -100,7 +101,7 @@ int CSteamP2PCodec::StreamEncode(const char *pUncompressedBytes, int nSamples, c
 		return 0;
 	}
 
-	*(uint16 *)writePos = compressRes;
+	*(uint16_t *)writePos = compressRes;
 	writePos += 2;
 	writePos += compressRes;
 
@@ -112,14 +113,18 @@ int CSteamP2PCodec::Decompress(const char *pCompressed, int compressedBytes, cha
 	if (compressedBytes < 12) {
 		return 0;
 	}
+	CRC32_t currentCRC;
+	CRC32_Init(&currentCRC);
+	CRC32_ProcessBuffer(&currentCRC, (void*) pCompressed, compressedBytes - 4);
+	uint32_t crc = CRC32_Final(currentCRC);
 
-	uint32 computedChecksum = crc32(pCompressed, compressedBytes - 4);
-	uint32 wireChecksum = *(uint32 *)(pCompressed + compressedBytes - 4);
+	uint32_t computedChecksum = crc;
+	uint32_t wireChecksum = *(uint32_t *)(pCompressed + compressedBytes - 4);
 
 	if (computedChecksum != wireChecksum) {
 		return 0;
 	}
-
+	
 	return StreamDecode(pCompressed + 8, compressedBytes - 12, pUncompressed, maxUncompressedBytes);
 }
 
@@ -130,10 +135,10 @@ int CSteamP2PCodec::Compress(const char *pUncompressedBytes, int nSamples, char 
 	}
 
 	char *writePos = pCompressed;
-	*(uint32 *)writePos = 0x00000011; // steamid (low part)
+	*(uint32_t *)writePos = 0x00000011; // steamid (low part)
 	writePos += 4;
 
-	*(uint32 *)writePos = 0x01100001; // steamid (high part)
+	*(uint32_t *)writePos = 0x01100001; // steamid (high part)
 	writePos += 4;
 
 	int encodeRes = StreamEncode(pUncompressedBytes, nSamples, writePos, maxCompressedBytes - 12, bFinal);
@@ -143,8 +148,13 @@ int CSteamP2PCodec::Compress(const char *pUncompressedBytes, int nSamples, char 
 
 	writePos += encodeRes;
 
-	uint32 cksum = crc32(pCompressed, writePos - pCompressed);
-	*(uint32 *)writePos = cksum;
+	CRC32_t currentCRC;
+	CRC32_Init(&currentCRC);
+	CRC32_ProcessBuffer(&currentCRC, (void*)pCompressed, writePos - pCompressed);
+	uint32_t crc = CRC32_Final(currentCRC);
+
+	uint32_t cksum = crc;
+	*(uint32_t *)writePos = cksum;
 	writePos += 4;
 
 	return writePos - pCompressed;

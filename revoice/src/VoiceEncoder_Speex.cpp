@@ -1,4 +1,7 @@
-#include "precompiled.h"
+#include "osconf.h"
+
+#include "VoiceEncoder_Speex.h"
+
 
 size_t ENCODED_FRAME_SIZE[] = { 0x6u, 0x6u, 0xFu, 0xFu, 0x14u, 0x14u, 0x1Cu, 0x1Cu, 0x26u, 0x26u, 0x26u };
 
@@ -65,7 +68,7 @@ void VoiceEncoder_Speex::Release()
 void VoiceEncoder_Speex::EncodeFrame(const char *pUncompressedBytes, char *pCompressed)
 {
 	float input[160];
-	int16 *in = (int16 *)pUncompressedBytes;
+	int16_t *in = (int16_t *)pUncompressedBytes;
 
 	for (int i = 0; i < ARRAYSIZE(input); i++, in++) {
 		input[i] = *in;
@@ -79,7 +82,7 @@ void VoiceEncoder_Speex::EncodeFrame(const char *pUncompressedBytes, char *pComp
 void VoiceEncoder_Speex::DecodeFrame(const char *pCompressed, char *pDecompressedBytes)
 {
 	float output[160];
-	int16 *out = (int16 *)pDecompressedBytes;
+	int16_t *out = (int16_t *)pDecompressedBytes;
 
 	speex_bits_read_from(&m_Bits, (char *)pCompressed, ENCODED_FRAME_SIZE[m_Quality]);
 	speex_decode(m_DecoderState, &m_Bits, output);

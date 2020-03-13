@@ -9,6 +9,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <stddef.h>
+	#include <stdint.h>
 #else //WIN32
 	#include <arpa/inet.h>
 	#include <dlfcn.h>
@@ -19,3 +20,5 @@
 	#include <sys/time.h>
 	#define HIDDEN __attribute__((visibility("hidden")))
 #endif //WIN32
+
+#include "CRC.h"

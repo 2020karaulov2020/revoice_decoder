@@ -1,9 +1,6 @@
 #pragma once
-
-#include "interface.h"
-
 class IGameClient;
-class IVoiceCodec: public IBaseInterface {
+class IVoiceCodec{
 protected:
 	virtual	~IVoiceCodec() {}
 	static const int BYTES_PER_SAMPLE = 2;
